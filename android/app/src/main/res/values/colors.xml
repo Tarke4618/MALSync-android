@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mal_blue">#2E51A2</color>
+    <color name="mal_blue_light">#4A7BC8</color>
+    <color name="mal_blue_dark">#1A3A7A</color>
+    <color name="accent_orange">#FF6B35</color>
+    <color name="accent_green">#4CAF50</color>
+    
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

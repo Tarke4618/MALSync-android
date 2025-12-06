@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MAL-Sync</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_browser">Browser</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Providers -->
+    <string name="provider_mal">MyAnimeList</string>
+    <string name="provider_anilist">AniList</string>
+    <string name="provider_kitsu">Kitsu</string>
+    <string name="provider_simkl">Simkl</string>
+    
+    <!-- Status -->
+    <string name="status_watching">Watching</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_on_hold">On Hold</string>
+    <string name="status_dropped">Dropped</string>
+    <string name="status_plan_to_watch">Plan to Watch</string>
+    
+    <!-- Actions -->
+    <string name="action_sync">Sync</string>
+    <string name="action_search">Search</string>
+    <string name="action_add">Add</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    
+    <!-- Messages -->
+    <string name="msg_sync_success">Synced successfully</string>
+    <string name="msg_sync_error">Sync failed</string>
+    <string name="msg_no_connection">No internet connection</string>
+    <string name="msg_login_required">Please connect your account</string>
+    
+    <!-- Permissions -->
+    <string name="permission_notification_title">Notification Permission</string>
+    <string name="permission_notification_message">Enable notifications to get alerts for new episodes</string>
+</resources>
