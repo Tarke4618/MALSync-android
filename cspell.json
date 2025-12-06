@@ -58,6 +58,7 @@
     "myanimelist",
     "dists",
     "jvmargs",
-    "Dfile"
+    "Dfile",
+    "swiperefresh"
   ]
 }
