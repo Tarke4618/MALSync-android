@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- MAL-Sync "M" letter icon -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,30L43,30L54,55L65,30L74,30L74,78L66,78L66,45L56,68L52,68L42,45L42,78L34,78Z"/>
+</vector>
