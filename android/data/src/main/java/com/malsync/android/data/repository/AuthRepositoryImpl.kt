@@ -144,7 +144,12 @@ class AuthRepositoryImpl @Inject constructor(
             throw Exception("Failed to fetch Kitsu user profile: ${response.code()}")
         }
 
-        val data = response.body()!!.data
+        val users = response.body()!!.data
+        if (users.isEmpty()) {
+            throw Exception("No user data returned from Kitsu")
+        }
+        
+        val data = users.first()
         return UserProfile(
             provider = SyncProvider.KITSU,
             userId = data.id,
@@ -161,12 +166,12 @@ class AuthRepositoryImpl @Inject constructor(
             throw Exception("Failed to fetch Simkl user profile: ${response.code()}")
         }
 
-        val data = response.body()!!.user
+        val responseData = response.body()!!
         return UserProfile(
             provider = SyncProvider.SIMKL,
-            userId = data.id.toString(),
-            username = data.name,
-            avatarUrl = data.avatar,
+            userId = responseData.account.id.toString(),
+            username = responseData.user.name,
+            avatarUrl = responseData.user.avatar,
             animeCount = 0, // Simkl doesn't provide counts in settings endpoint
             mangaCount = 0
         )

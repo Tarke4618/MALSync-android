@@ -64,5 +64,5 @@ interface KitsuApiService {
     @GET("edge/users")
     suspend fun getCurrentUser(
         @Query("filter[self]") self: Boolean = true
-    ): Response<KitsuUserDetailResponse>
+    ): Response<KitsuUserResponse>
 }

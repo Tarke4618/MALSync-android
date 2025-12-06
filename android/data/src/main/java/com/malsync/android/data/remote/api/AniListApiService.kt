@@ -25,9 +25,10 @@ interface AniListApiService {
 
     companion object {
         // GraphQL queries
+        // Note: $ is escaped as ${'$'} to avoid Kotlin string interpolation
         const val USER_ANIME_LIST_QUERY = """
-            query ($!userId: Int, $!type: MediaType, $!status: MediaListStatus) {
-              MediaListCollection(userId: $!userId, type: $!type, status: $!status) {
+            query (${'$'}userId: Int, ${'$'}type: MediaType, ${'$'}status: MediaListStatus) {
+              MediaListCollection(userId: ${'$'}userId, type: ${'$'}type, status: ${'$'}status) {
                 lists {
                   entries {
                     id
@@ -75,15 +76,15 @@ interface AniListApiService {
         """
         
         const val SEARCH_ANIME_QUERY = """
-            query ($!search: String, $!type: MediaType, $!page: Int, $!perPage: Int) {
-              Page(page: $!page, perPage: $!perPage) {
+            query (${'$'}search: String, ${'$'}type: MediaType, ${'$'}page: Int, ${'$'}perPage: Int) {
+              Page(page: ${'$'}page, perPage: ${'$'}perPage) {
                 pageInfo {
                   total
                   currentPage
                   lastPage
                   hasNextPage
                 }
-                media(search: $!search, type: $!type) {
+                media(search: ${'$'}search, type: ${'$'}type) {
                   id
                   title {
                     romaji
@@ -108,8 +109,8 @@ interface AniListApiService {
         """
         
         const val GET_ANIME_QUERY = """
-            query ($!id: Int) {
-              Media(id: $!id, type: ANIME) {
+            query (${'$'}id: Int) {
+              Media(id: ${'$'}id, type: ANIME) {
                 id
                 title {
                   romaji
@@ -152,8 +153,8 @@ interface AniListApiService {
         """
         
         const val UPDATE_ANIME_MUTATION = """
-            mutation ($!mediaId: Int, $!status: MediaListStatus, $!score: Float, $!progress: Int) {
-              SaveMediaListEntry(mediaId: $!mediaId, status: $!status, score: $!score, progress: $!progress) {
+            mutation (${'$'}mediaId: Int, ${'$'}status: MediaListStatus, ${'$'}score: Float, ${'$'}progress: Int) {
+              SaveMediaListEntry(mediaId: ${'$'}mediaId, status: ${'$'}status, score: ${'$'}score, progress: ${'$'}progress) {
                 id
                 mediaId
                 status
@@ -165,8 +166,8 @@ interface AniListApiService {
         """
         
         const val DELETE_ANIME_MUTATION = """
-            mutation ($!id: Int) {
-              DeleteMediaListEntry(id: $!id) {
+            mutation (${'$'}id: Int) {
+              DeleteMediaListEntry(id: ${'$'}id) {
                 deleted
               }
             }

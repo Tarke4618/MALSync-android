@@ -222,6 +222,7 @@ private fun StatItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StatusFilterRow(
     selectedStatus: UserAnimeStatus,

@@ -165,6 +165,7 @@ fun SearchScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProviderFilterChips(
     selectedProviders: Set<com.malsync.android.domain.model.SyncProvider>,

@@ -105,8 +105,10 @@ fun MalMangaResponse.toDomain(provider: SyncProvider = SyncProvider.MYANIMELIST)
         startDate = startDate,
         endDate = endDate,
         genres = genres?.map { it.name }.orEmpty(),
+        authors = emptyList(), // MAL API doesn't provide author details in list endpoint
         provider = provider,
-        providerIds = mapOf(provider to id.toString())
+        providerIds = mapOf(provider to id.toString()),
+        readingLinks = emptyList()
     )
 }
 
