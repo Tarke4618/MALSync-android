@@ -55,6 +55,7 @@
     "viewmodel",
     "gradlew",
     "anilist",
-    "myanimelist"
+    "myanimelist",
+    "dists"
   ]
 }
