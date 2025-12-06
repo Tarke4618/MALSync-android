@@ -87,8 +87,9 @@ fun AnimeCard(
                 
                 // Progress Bar Overlay
                 if (showProgress) {
-                   val progress = if (anime.episodes != null && anime.episodes > 0) {
-                        anime.currentEpisode.toFloat() / anime.episodes.toFloat()
+                    val episodes = anime.episodes
+                    val progress = if (episodes != null && episodes > 0) {
+                        anime.currentEpisode.toFloat() / episodes.toFloat()
                     } else {
                         0f
                     }
