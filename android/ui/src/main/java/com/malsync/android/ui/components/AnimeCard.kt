@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -23,138 +23,120 @@ fun AnimeCard(
     anime: Anime,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onIncrementEpisode: (() -> Unit)? = null
+    onIncrementEpisode: (() -> Unit)? = null,
+    showProgress: Boolean = true
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
+            .width(160.dp) // Standard poster width
+            .height(260.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp) // Flat for modern look, use border/shadow only if needed
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            // Cover Image
-            AsyncImage(
-                model = anime.coverImage,
-                contentDescription = anime.title,
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Image Container
+            Box(
                 modifier = Modifier
-                    .width(80.dp)
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            // Anime Info
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(120.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth()
+                    .weight(1f) // Take up available space
             ) {
-                Column {
-                    // Title
-                    Text(
-                        text = anime.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    // Type and Status
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                AsyncImage(
+                    model = anime.coverImage,
+                    contentDescription = anime.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                
+                // Status Badge
+                anime.userStatus?.let { status ->
+                    Surface(
+                        color = getStatusColor(status.name).copy(alpha = 0.9f),
+                        shape = RoundedCornerShape(topStart = 12.dp, bottomEnd = 8.dp),
+                        modifier = Modifier.align(Alignment.TopStart)
                     ) {
-                        StatusChip(
-                            text = anime.type.name,
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        Text(
+                            text = status.name.replace("_", " "),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
-                        
-                        anime.userStatus?.let { status ->
-                            StatusChip(
-                                text = status.name.replace("_", " "),
-                                containerColor = getStatusColor(status.name)
-                            )
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    // Score
-                    anime.score?.let { score ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = String.format("%.2f", score),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
                     }
                 }
                 
-                // Progress
-                Column {
-                    // Episode progress bar
-                    val progress = if (anime.episodes != null && anime.episodes > 0) {
+                // Episode Count Badge (Glassmorphismish)
+                if (anime.episodes != null || anime.currentEpisode > 0) {
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = "${anime.currentEpisode}" + (anime.episodes?.let { "/$it" } ?: "+"),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
+                
+                // Progress Bar Overlay
+                if (showProgress) {
+                   val progress = if (anime.episodes != null && anime.episodes > 0) {
                         anime.currentEpisode.toFloat() / anime.episodes.toFloat()
                     } else {
                         0f
                     }
-                    
-                    LinearProgressIndicator(
-                        progress = progress,
+                    if (progress > 0) {
+                         LinearProgressIndicator(
+                            progress = progress,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(3.dp)
+                                .align(Alignment.BottomCenter),
+                            trackColor = Color.Transparent,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+            
+            // Text Content
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = anime.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    minLines = 2 // Fix height for grid alignment
+                )
+                
+                if (onIncrementEpisode != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Button(
+                        onClick = onIncrementEpisode,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(4.dp)
-                            .clip(RoundedCornerShape(2.dp))
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    // Episode text and increment button
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .height(32.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text(
-                            text = buildString {
-                                append("Episode ${anime.currentEpisode}")
-                                anime.episodes?.let { append(" / $it") }
-                            },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                         Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Ep",
+                            modifier = Modifier.size(14.dp)
                         )
-                        
-                        onIncrementEpisode?.let { onClick ->
-                            if (anime.episodes == null || anime.currentEpisode < anime.episodes) {
-                                FilledTonalIconButton(
-                                    onClick = onClick,
-                                    modifier = Modifier.size(32.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "Increment episode",
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
-                            }
-                        }
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("1 Ep", style = MaterialTheme.typography.labelMedium)
                     }
                 }
             }

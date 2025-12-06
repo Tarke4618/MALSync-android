@@ -44,4 +44,9 @@ interface AuthRepository {
      * Get all authenticated providers
      */
     fun getAuthenticatedProviders(): Flow<List<SyncProvider>>
+    
+    /**
+     * Exchange auth code for token
+     */
+    suspend fun exchangeToken(provider: SyncProvider, code: String): Result<AuthToken>
 }

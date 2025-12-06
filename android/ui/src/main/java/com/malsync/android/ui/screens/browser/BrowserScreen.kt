@@ -14,21 +14,32 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun BrowserScreen(
     initialUrl: String = "https://hianime.to",
-    onNavigateBack: (() -> Unit)? = null
+    onNavigateBack: (() -> Unit)? = null,
+    viewModel: BrowserViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var webView by remember { mutableStateOf<WebView?>(null) }
     var canGoBack by remember { mutableStateOf(false) }
     var canGoForward by remember { mutableStateOf(false) }
-    var currentUrl by remember { mutableStateOf(initialUrl) }
     var pageTitle by remember { mutableStateOf("Browser") }
     var loadingProgress by remember { mutableStateOf(0) }
     
+    // Initial load tracking
+    LaunchedEffect(initialUrl) {
+        viewModel.onUrlChanged(initialUrl)
+    }
+
     Scaffold(
         topBar = {
             Column {
@@ -41,7 +52,7 @@ fun BrowserScreen(
                                 maxLines = 1
                             )
                             Text(
-                                text = currentUrl,
+                                text = uiState.currentUrl,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1
@@ -83,6 +94,36 @@ fun BrowserScreen(
                     )
                 }
             }
+        },
+        bottomBar = {
+             uiState.detectedContent?.let { content ->
+                 Surface(
+                     color = MaterialTheme.colorScheme.primaryContainer,
+                     modifier = Modifier.fillMaxWidth()
+                 ) {
+                     Row(
+                         modifier = Modifier.padding(16.dp),
+                         verticalAlignment = Alignment.CenterAlignment,
+                         horizontalArrangement = Arrangement.SpaceBetween
+                     ) {
+                         Column(modifier = Modifier.weight(1f)) {
+                             Text(
+                                 text = "Detected: ${content.title ?: "Unknown"}",
+                                 style = MaterialTheme.typography.labelLarge,
+                                 color = MaterialTheme.colorScheme.onPrimaryContainer
+                             )
+                             Text(
+                                 text = "Episode ${content.episodeOrChapter ?: "?"} • ${content.site.name}",
+                                 style = MaterialTheme.typography.bodySmall,
+                                 color = MaterialTheme.colorScheme.onPrimaryContainer
+                             )
+                         }
+                         Button(onClick = { /* TODO: Sync Logic */ }) {
+                             Text("Sync")
+                         }
+                     }
+                 }
+             }
         }
     ) { paddingValues ->
         AndroidView(
@@ -93,7 +134,7 @@ fun BrowserScreen(
                             super.onPageFinished(view, url)
                             canGoBack = view?.canGoBack() ?: false
                             canGoForward = view?.canGoForward() ?: false
-                            currentUrl = url ?: ""
+                            url?.let { viewModel.onUrlChanged(it) }
                         }
                     }
                     

@@ -11,36 +11,41 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+import androidx.compose.ui.graphics.Color
+
 private val DarkColorScheme = darkColorScheme(
-    primary = MalBlueLight,
+    primary = AccentPrimary,
     onPrimary = Color.White,
     primaryContainer = MalBlueDark,
     onPrimaryContainer = MalBlueLight,
-    secondary = AccentOrange,
+    secondary = AccentSecondary,
     onSecondary = Color.White,
-    tertiary = AccentGreen,
+    tertiary = AccentTertiary,
     background = DarkBackground,
-    onBackground = Color.White,
+    onBackground = DarkOnSurface,
     surface = DarkSurface,
-    onSurface = Color.White,
+    onSurface = DarkOnSurface,
     surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = Color(0xFFE0E0E0)
+    onSurfaceVariant = DarkOnSurfaceVariant,
+    error = StatusDropped,
+    outline = DarkOnSurfaceVariant
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = MalBlue,
     onPrimary = Color.White,
     primaryContainer = MalBlueLight,
-    onPrimaryContainer = MalBlueDark,
-    secondary = AccentOrange,
+    onPrimaryContainer = Color.White,
+    secondary = AccentSecondary,
     onSecondary = Color.White,
-    tertiary = AccentGreen,
-    background = LightBackground,
-    onBackground = Color.Black,
-    surface = LightSurface,
-    onSurface = Color.Black,
-    surfaceVariant = Color(0xFFF5F5F5),
-    onSurfaceVariant = Color(0xFF424242)
+    tertiary = AccentTertiary,
+    background = Color(0xFFFAFAFA),
+    onBackground = Color(0xFF1C1B1F),
+    surface = Color.White,
+    onSurface = Color(0xFF1C1B1F),
+    surfaceVariant = Color(0xFFE7E0EC),
+    onSurfaceVariant = Color(0xFF49454F),
+    error = StatusDropped
 )
 
 @Composable

@@ -102,6 +102,33 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun exchangeToken(provider: SyncProvider, code: String): Result<AuthToken> {
+        return try {
+            // In a real production app, this would make a network call to the provider's
+            // OAuth token endpoint using the code and client_secret.
+            // Since we are porting the extension and don't have the backend proxy or 
+            // the secrets embedded here, we will simulate a successful exchange for MVP verification.
+            
+            // TODO: Implement actual network exchange when client secrets are available
+            val mockToken = AuthToken(
+                provider = provider,
+                accessToken = "mock_access_token_$code", // distinct per code
+                refreshToken = "mock_refresh_token",
+                expiresIn = 2592000L, // 30 days
+                createdAt = System.currentTimeMillis()
+            )
+            
+            saveAuthToken(mockToken)
+            
+            // Also try to fetch the profile immediately to warm up the cache
+            getUserProfile(provider)
+            
+            Result.success(mockToken)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     // Private helper methods for fetching user profiles from each provider
 
     private suspend fun fetchMalUserProfile(): UserProfile {
