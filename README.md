@@ -478,6 +478,13 @@ Makes it possible to use your MyAnimeList/Anilist/Kitsu/Simkl anime/mangalist as
 
 [Here](src/pages-adult/README.md)
 
+#### **Android App**
+
+MAL-Sync is now available as a native Android app! 
+[**Explore the Code**](./android)
+<br>
+*(APK download coming soon)*
+
 ## What more can it do?
 
 MyAnimeList
