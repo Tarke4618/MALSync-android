@@ -31,62 +31,95 @@ fun AnimeCard(
             .width(160.dp) // Standard poster width
             .height(260.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp), // More rounded
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp) // Flat for modern look, use border/shadow only if needed
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Image Container
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Background Image
+            AsyncImage(
+                model = anime.coverImage,
+                contentDescription = anime.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // Gradient Overlay for Text Readability
             Box(
                 modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.6f),
+                                Color.Black.copy(alpha = 0.9f)
+                            ),
+                            startY = 0f
+                        )
+                    )
+            )
+
+            // Status Badge (Glassmorphism)
+            anime.userStatus?.let { status ->
+                 Surface(
+                    color = getStatusColor(status.name).copy(alpha = 0.85f),
+                    shape = RoundedCornerShape(bottomEnd = 16.dp),
+                    modifier = Modifier.align(Alignment.TopStart)
+                ) {
+                    Text(
+                        text = status.name.replace("_", " "),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    )
+                }
+            }
+
+            // Episode Badge (Glassmorphism)
+            if (anime.episodes != null || anime.currentEpisode > 0) {
+                 Surface(
+                    color = Color.Black.copy(alpha = 0.6f),
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = "${anime.currentEpisode}" + (anime.episodes?.let { "/$it" } ?: "+"),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
+
+            // Bottom Content
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
                     .fillMaxWidth()
-                    .weight(1f) // Take up available space
+                    .padding(12.dp)
             ) {
-                AsyncImage(
-                    model = anime.coverImage,
-                    contentDescription = anime.title,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                Text(
+                    text = anime.title,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        shadow = androidx.compose.ui.graphics.Shadow(
+                            color = Color.Black,
+                            blurRadius = 4f
+                        )
+                    ),
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 
-                // Status Badge
-                anime.userStatus?.let { status ->
-                    Surface(
-                        color = getStatusColor(status.name).copy(alpha = 0.9f),
-                        shape = RoundedCornerShape(topStart = 12.dp, bottomEnd = 8.dp),
-                        modifier = Modifier.align(Alignment.TopStart)
-                    ) {
-                        Text(
-                            text = status.name.replace("_", " "),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                }
-                
-                // Episode Count Badge (Glassmorphismish)
-                if (anime.episodes != null || anime.currentEpisode > 0) {
-                    Surface(
-                        color = Color.Black.copy(alpha = 0.7f),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                    ) {
-                        Text(
-                            text = "${anime.currentEpisode}" + (anime.episodes?.let { "/$it" } ?: "+"),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
-                }
-                
-                // Progress Bar Overlay
                 if (showProgress) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     val episodes = anime.episodes
                     val progress = if (episodes != null && episodes > 0) {
                         anime.currentEpisode.toFloat() / episodes.toFloat()
@@ -98,43 +131,31 @@ fun AnimeCard(
                             progress = progress,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(3.dp)
-                                .align(Alignment.BottomCenter),
-                            trackColor = Color.Transparent,
+                                .height(4.dp)
+                                .clip(RoundedCornerShape(2.dp)),
+                            trackColor = Color.White.copy(alpha = 0.3f),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
-            }
-            
-            // Text Content
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = anime.title,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    minLines = 2 // Fix height for grid alignment
-                )
-                
-                if (onIncrementEpisode != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
+
+                 if (onIncrementEpisode != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = onIncrementEpisode,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(32.dp),
+                            .height(36.dp),
                         contentPadding = PaddingValues(0.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                        )
                     ) {
-                         Icon(
+                        Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Ep",
-                            modifier = Modifier.size(14.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("1 Ep", style = MaterialTheme.typography.labelMedium)

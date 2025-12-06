@@ -97,35 +97,58 @@ fun BrowserScreen(
             }
         },
         bottomBar = {
-             uiState.detectedContent?.let { content ->
-                 Surface(
-                     color = MaterialTheme.colorScheme.primaryContainer,
-                     modifier = Modifier.fillMaxWidth()
-                 ) {
-                     Row(
-                         modifier = Modifier.padding(16.dp),
-                         verticalAlignment = Alignment.CenterVertically,
-                         horizontalArrangement = Arrangement.SpaceBetween
+            androidx.compose.animation.AnimatedVisibility(
+                visible = uiState.detectedContent != null,
+                enter = androidx.compose.animation.slideInVertically { it } + androidx.compose.animation.fadeIn(),
+                exit = androidx.compose.animation.slideOutVertically { it } + androidx.compose.animation.fadeOut()
+            ) {
+                 uiState.detectedContent?.let { content ->
+                     Surface(
+                         color = MaterialTheme.colorScheme.primaryContainer,
+                         modifier = Modifier.fillMaxWidth(),
+                         tonalElevation = 3.dp,
+                         shadowElevation = 4.dp
                      ) {
-                         Column(modifier = Modifier.weight(1f)) {
-                             Text(
-                                 text = "Detected: ${content.title ?: "Unknown"}",
-                                 style = MaterialTheme.typography.labelLarge,
-                                 color = MaterialTheme.colorScheme.onPrimaryContainer
-                             )
-                             Text(
-                                 text = "Episode ${content.episodeOrChapter ?: "?"} • ${content.site.name}",
-                                 style = MaterialTheme.typography.bodySmall,
-                                 color = MaterialTheme.colorScheme.onPrimaryContainer
-                             )
-                         }
-                         Button(onClick = { /* TODO: Sync Logic */ }) {
-                             Text("Sync")
+                         Row(
+                             modifier = Modifier
+                                 .padding(16.dp)
+                                 .navigationBarsPadding(), // Handle edge-to-edge
+                             verticalAlignment = Alignment.CenterVertically,
+                             horizontalArrangement = Arrangement.SpaceBetween
+                         ) {
+                             Column(modifier = Modifier.weight(1f)) {
+                                 Text(
+                                     text = "Detected: ${content.title ?: "Unknown"}",
+                                     style = MaterialTheme.typography.labelLarge,
+                                     color = MaterialTheme.colorScheme.onPrimaryContainer
+                                 )
+                                 Text(
+                                     text = "Episode ${content.episodeOrChapter ?: "?"} • ${content.site.name}",
+                                     style = MaterialTheme.typography.bodyMedium,
+                                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                 )
+                             }
+                             Button(
+                                 onClick = { /* TODO: Sync Logic */ },
+                                 colors = ButtonDefaults.buttonColors(
+                                     containerColor = MaterialTheme.colorScheme.primary,
+                                     contentColor = MaterialTheme.colorScheme.onPrimary
+                                 )
+                             ) {
+                                 Icon(
+                                     androidx.compose.material.icons.filled.Refresh, // Placeholder icon for sync
+                                     contentDescription = null,
+                                     modifier = Modifier.size(16.dp)
+                                 )
+                                 Spacer(modifier = Modifier.width(8.dp))
+                                 Text("Sync")
+                             }
                          }
                      }
                  }
-             }
+            }
         }
+
     ) { paddingValues ->
         AndroidView(
             factory = { context ->
