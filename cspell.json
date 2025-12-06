@@ -59,6 +59,10 @@
     "dists",
     "jvmargs",
     "Dfile",
-    "swiperefresh"
+    "swiperefresh",
+    "Argb",
+    "blurple",
+    "Glassmorphismish",
+    "Millis"
   ]
 }
