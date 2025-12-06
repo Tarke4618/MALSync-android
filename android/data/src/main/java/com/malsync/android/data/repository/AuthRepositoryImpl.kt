@@ -114,8 +114,7 @@ class AuthRepositoryImpl @Inject constructor(
                 provider = provider,
                 accessToken = "mock_access_token_$code", // distinct per code
                 refreshToken = "mock_refresh_token",
-                expiresIn = 2592000L, // 30 days
-                createdAt = System.currentTimeMillis()
+                expiresAt = System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000) // 30 days from now
             )
             
             saveAuthToken(mockToken)
