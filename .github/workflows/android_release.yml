@@ -26,9 +26,10 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: "8.6"
 
       - name: Build APK
-        # We use 'gradle' directly in case the wrapper is missing from the repo
         run: gradle assembleDebug --no-daemon
 
       - name: Create Release
