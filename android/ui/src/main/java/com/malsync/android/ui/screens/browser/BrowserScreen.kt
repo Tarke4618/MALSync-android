@@ -136,7 +136,7 @@ fun BrowserScreen(
                                  )
                              ) {
                                  Icon(
-                                     androidx.compose.material.icons.filled.Refresh, // Placeholder icon for sync
+                                     Icons.Filled.Refresh, // Placeholder icon for sync
                                      contentDescription = null,
                                      modifier = Modifier.size(16.dp)
                                  )
