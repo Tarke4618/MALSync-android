@@ -31,8 +31,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.52")
+    ksp("com.google.dagger:hilt-android-compiler:2.52")
     
     // Hilt Worker
     implementation("androidx.hilt:hilt-work:1.1.0")
