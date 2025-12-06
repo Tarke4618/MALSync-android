@@ -10,9 +10,6 @@ jobs:
   build:
     name: Build & Release
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./android
 
     steps:
       - name: Checkout
@@ -28,8 +25,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: "8.6"
-          build-root-directory: android
+
       - name: Build APK
+        working-directory: ./android
         run: gradle assembleDebug --no-daemon
 
       - name: Create Release
