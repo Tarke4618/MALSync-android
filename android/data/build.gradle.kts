@@ -54,6 +54,9 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:$workVersion")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // Security
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     
     testImplementation("junit:junit:4.13.2")
 }
