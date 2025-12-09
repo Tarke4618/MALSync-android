@@ -1,3 +1,5 @@
+package com.malsync.android.data.remote.interceptor
+
 import com.malsync.android.data.local.AuthManager
 import com.malsync.android.domain.model.SyncProvider
 import okhttp3.Interceptor
