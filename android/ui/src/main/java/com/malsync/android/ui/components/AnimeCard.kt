@@ -18,7 +18,15 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.malsync.android.domain.model.Anime
 
-@Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.scale
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.animation.core.animateFloatAsState
+import com.malsync.android.ui.theme.glassBackground
+
 @Composable
 fun AnimeCard(
     anime: Anime,
@@ -76,7 +84,7 @@ fun AnimeCard(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(8.dp)
-                        .com.malsync.android.ui.theme.glassBackground(
+                        .glassBackground(
                             shape = RoundedCornerShape(8.dp),
                             color = getStatusColor(status.name).copy(alpha = 0.7f),
                             borderColor = Color.White.copy(alpha = 0.2f)
@@ -97,7 +105,7 @@ fun AnimeCard(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
-                        .com.malsync.android.ui.theme.glassBackground(
+                        .glassBackground(
                             shape = RoundedCornerShape(8.dp),
                             color = Color.Black.copy(alpha = 0.5f)
                         )
@@ -155,7 +163,7 @@ fun AnimeCard(
                             .fillMaxWidth()
                             .height(36.dp)
                             .clickable { onIncrementEpisode() }
-                            .com.malsync.android.ui.theme.glassBackground(
+                            .glassBackground(
                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                                 shape = RoundedCornerShape(8.dp)
                             ),

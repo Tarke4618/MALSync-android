@@ -10,8 +10,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.malsync.android.ui.theme.glassBackground
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
@@ -56,7 +58,7 @@ fun MALSyncNavHost() {
             if (currentRoute != Screen.Settings.route && currentRoute?.startsWith("detail") != true) {
                 NavigationBar(
                     containerColor = androidx.compose.ui.graphics.Color.Transparent, // Let modifier handle background
-                    modifier = Modifier.padding(16.dp).com.malsync.android.ui.theme.glassBackground(
+                    modifier = Modifier.padding(16.dp).glassBackground(
                          shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
                     ) // Floating glass bar effect
                 ) {

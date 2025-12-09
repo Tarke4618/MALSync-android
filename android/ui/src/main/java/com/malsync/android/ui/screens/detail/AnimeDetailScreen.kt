@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.malsync.android.ui.theme.glassBackground
 import com.malsync.android.ui.theme.GlassSurface
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +59,7 @@ fun AnimeDetailScreen(
                     ) {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(anime.imageUrl) // Should use Banner if available, but using cover as fallback
+                                .data(anime.bannerImage ?: anime.coverImage) // Should use Banner if available, but using cover as fallback
                                 .crossfade(true)
                                 .build(),
                             contentDescription = "Banner",
@@ -86,7 +87,7 @@ fun AnimeDetailScreen(
                             onClick = onNavigateBack,
                             modifier = Modifier
                                 .padding(16.dp)
-                                .com.malsync.android.ui.theme.glassBackground(shape = androidx.compose.foundation.shape.CircleShape)
+                                .glassBackground(shape = androidx.compose.foundation.shape.CircleShape)
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                         }
@@ -120,7 +121,7 @@ fun AnimeDetailScreen(
                             )
                             InfoCard(
                                 label = "Episodes",
-                                value = "${anime.totalEpisodes ?: "?"}",
+                                value = "${anime.episodes ?: "?"}",
                                 modifier = Modifier.weight(1f)
                             )
                             InfoCard(
@@ -165,7 +166,7 @@ fun InfoCard(
 ) {
     Box(
         modifier = modifier
-            .com.malsync.android.ui.theme.glassBackground(shape = RoundedCornerShape(16.dp))
+            .glassBackground(shape = RoundedCornerShape(16.dp))
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {

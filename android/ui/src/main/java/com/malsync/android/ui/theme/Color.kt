@@ -40,9 +40,12 @@ val PremiumGradient = Brush.verticalGradient(
 )
 
 val DarkGradient = Brush.verticalGradient(
-    colors = listOf(
-        Color.Transparent,
-        Color(0xCC050505),
-        Color(0xFF050505)
     )
 )
+
+// Provider Colors
+val ColorMAL = Color(0xFF2E51A2)
+val ColorAniList = Color(0xFF3DB4F2)
+val ColorKitsu = Color(0xFFFD755C)
+val ColorSimkl = Color(0xFF242424) // Simkl is black/dark
+val ColorShikimori = Color(0xFFEA4C89) // Placeholder pink-ish

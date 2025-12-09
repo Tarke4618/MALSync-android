@@ -112,6 +112,7 @@ private fun ProviderChip(
                     SyncProvider.ANILIST -> "AniList"
                     SyncProvider.KITSU -> "Kitsu"
                     SyncProvider.SIMKL -> "Simkl"
+                    SyncProvider.SHIKIMORI -> "Shikimori"
                 },
                 style = MaterialTheme.typography.labelSmall,
                 color = contentColor
@@ -127,5 +128,6 @@ private fun getProviderColor(provider: SyncProvider): Color {
         SyncProvider.ANILIST -> ColorAniList
         SyncProvider.KITSU -> ColorKitsu
         SyncProvider.SIMKL -> ColorSimkl
+        SyncProvider.SHIKIMORI -> ColorShikimori
     }
 }
