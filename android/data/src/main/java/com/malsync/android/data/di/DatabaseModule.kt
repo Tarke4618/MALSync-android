@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.malsync.android.data.local.MALSyncDatabase
 import com.malsync.android.data.local.dao.AnimeDao
+import com.malsync.android.data.local.dao.AuthTokenDao
+import com.malsync.android.data.local.dao.MangaDao
 import com.malsync.android.data.local.dao.MappingDao
 import com.malsync.android.data.local.dao.UserListEntryDao
+import com.malsync.android.data.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,4 +40,13 @@ object DatabaseModule {
     
     @Provides
     fun provideMappingDao(database: MALSyncDatabase): MappingDao = database.mappingDao()
+
+    @Provides
+    fun provideMangaDao(database: MALSyncDatabase): MangaDao = database.mangaDao()
+
+    @Provides
+    fun provideAuthTokenDao(database: MALSyncDatabase): AuthTokenDao = database.authTokenDao()
+
+    @Provides
+    fun provideUserProfileDao(database: MALSyncDatabase): UserProfileDao = database.userProfileDao()
 }

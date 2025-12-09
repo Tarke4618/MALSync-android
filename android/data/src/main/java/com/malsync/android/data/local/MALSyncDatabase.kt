@@ -3,18 +3,17 @@ package com.malsync.android.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.malsync.android.data.local.dao.AnimeDao
-import com.malsync.android.data.local.dao.MappingDao
-import com.malsync.android.data.local.dao.UserListEntryDao
-import com.malsync.android.data.local.entity.AnimeEntity
-import com.malsync.android.data.local.entity.MappingEntity
-import com.malsync.android.data.local.entity.UserListEntryEntity
+import com.malsync.android.data.local.dao.*
+import com.malsync.android.data.local.entity.*
 
 @Database(
     entities = [
         AnimeEntity::class,
+        MangaEntity::class,
         UserListEntryEntity::class,
-        MappingEntity::class
+        MappingEntity::class,
+        AuthTokenEntity::class,
+        UserProfileEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -24,4 +23,7 @@ abstract class MALSyncDatabase : RoomDatabase() {
     abstract fun animeDao(): AnimeDao
     abstract fun userListEntryDao(): UserListEntryDao
     abstract fun mappingDao(): MappingDao
+    abstract fun mangaDao(): MangaDao
+    abstract fun authTokenDao(): AuthTokenDao
+    abstract fun userProfileDao(): UserProfileDao
 }
