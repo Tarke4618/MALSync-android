@@ -2,6 +2,7 @@ package com.malsync.android.domain.repository
 
 import com.malsync.android.domain.model.Anime
 import com.malsync.android.domain.model.UserAnimeListEntry
+import com.malsync.android.domain.model.SyncProvider
 import kotlinx.coroutines.flow.Flow
 
 interface MultiServiceRepository {
