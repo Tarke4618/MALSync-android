@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.malsync.android.data.local.AuthManager
 import com.malsync.android.domain.model.SyncProvider
+import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,14 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val authManager: AuthManager,
+    private val authRepository: com.malsync.android.domain.repository.AuthRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    val providerStates: StateFlow<Map<SyncProvider, Boolean>> = authManager.authStates
-        .map { states ->
+    val providerStates: StateFlow<Map<SyncProvider, Boolean>> = authRepository.getAuthenticatedProviders()
+        .map { authenticatedProviders ->
             SyncProvider.values().associateWith { provider ->
-                states[provider] != null && !states[provider]!!.isExpired()
+                authenticatedProviders.contains(provider)
             }
         }
         .stateIn(
@@ -49,8 +49,6 @@ class SettingsViewModel @Inject constructor(
             SyncProvider.MYANIMELIST -> {
                 "${provider.oauthUrl}?response_type=code&client_id=MY_MAL_CLIENT_ID&state=myanimelist&code_challenge=CODE_CHALLENGE" 
                 // MAL requires PKCE, simplified here. 
-                // For "No Code" user, we might assume they have a helper or we use a simple flow if allowed.
-                // Standard: response_type=code&client_id=...&code_challenge=...
             }
             SyncProvider.ANILIST -> {
                 "${provider.oauthUrl}?client_id=MY_ANILIST_ID&response_type=code&redirect_uri=$callbackUrl&state=anilist"
@@ -68,6 +66,8 @@ class SettingsViewModel @Inject constructor(
     }
     
     fun onDisconnectClick(provider: SyncProvider) {
-        authManager.removeToken(provider)
+        viewModelScope.launch {
+            authRepository.deleteAuthToken(provider)
+        }
     }
 }

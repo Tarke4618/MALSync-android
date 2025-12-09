@@ -154,7 +154,7 @@ fun MalAnimeListItem.toUserAnimeListEntry(): UserAnimeListEntry? {
         status = status,
         score = listStatus?.score?.toFloat() ?: 0f,
         watchedEpisodes = listStatus?.numEpisodesWatched ?: 0,
-        totalEpisodes = node.numEpisodes,
+        totalEpisodes = node.numEpisodes ?: 0,
         updatedAt = try {
             // Simple parsing or just use current time if parsing fails for now
             // In real app, DateFormatter is needed
