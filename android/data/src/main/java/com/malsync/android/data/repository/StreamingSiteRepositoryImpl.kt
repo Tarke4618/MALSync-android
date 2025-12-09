@@ -208,10 +208,48 @@ class StreamingSiteRepositoryImpl @Inject constructor() : StreamingSiteRepositor
     }
 
     override suspend fun getInjectionScript(url: String): String? {
-        // For MVP, we don't have injection scripts yet
-        // In future, this would return JavaScript to inject into the WebView
-        // to detect anime/manga information from the page
-        return null
+        // Generic video detection script
+        return """
+            (function() {
+                if (window.malSyncInjected) return;
+                window.malSyncInjected = true;
+                
+                function checkForVideo() {
+                    const videos = document.getElementsByTagName('video');
+                    for(let i = 0; i < videos.length; i++) {
+                        const v = videos[i];
+                        if(!v.getAttribute('data-malsync-attached')) {
+                            v.setAttribute('data-malsync-attached', 'true');
+                            
+                            // Report initial finding
+                            if(v.duration > 0) {
+                                try {
+                                    AndroidDetection.onVideoFound(v.duration);
+                                } catch(e) {}
+                            }
+                            
+                            v.addEventListener('loadedmetadata', function() {
+                                 try {
+                                    AndroidDetection.onVideoFound(v.duration);
+                                } catch(e) {}
+                            });
+
+                            v.addEventListener('timeupdate', function() {
+                               try {
+                                   // Throttle updates or send every time, 
+                                   // simplest is to just send and let Android side debounce if needed
+                                   AndroidDetection.onVideoProgress(v.currentTime, v.duration);
+                               } catch(e) {}
+                            });
+                        }
+                    }
+                }
+                
+                // Check periodically for new video elements (SPA navigation, dynamic loading)
+                setInterval(checkForVideo, 2000);
+                checkForVideo();
+            })();
+        """.trimIndent()
     }
 
     override suspend fun isSiteSupported(url: String): Boolean {

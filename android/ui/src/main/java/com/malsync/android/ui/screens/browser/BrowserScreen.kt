@@ -36,6 +36,21 @@ fun BrowserScreen(
     var pageTitle by remember { mutableStateOf("Browser") }
     var loadingProgress by remember { mutableStateOf(0) }
     
+    val detectionInterface = remember {
+        AndroidDetectionInterface(
+            onVideoFound = { duration -> viewModel.onVideoFound(duration) },
+            onVideoProgress = { current, total -> viewModel.onVideoProgress(current, total) }
+        )
+    }
+
+    // Handle script injection
+    LaunchedEffect(uiState.injectionScript) {
+        uiState.injectionScript?.let { script ->
+            webView?.evaluateJavascript(script, null)
+            viewModel.onScriptInjected()
+        }
+    }
+    
     // Initial load tracking
     LaunchedEffect(initialUrl) {
         viewModel.onUrlChanged(initialUrl)
@@ -104,7 +119,7 @@ fun BrowserScreen(
             ) {
                  uiState.detectedContent?.let { content ->
                      Surface(
-                         color = MaterialTheme.colorScheme.primaryContainer,
+                         color = if (uiState.showUpdateProposal) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
                          modifier = Modifier.fillMaxWidth(),
                          tonalElevation = 3.dp,
                          shadowElevation = 4.dp
@@ -117,15 +132,21 @@ fun BrowserScreen(
                              horizontalArrangement = Arrangement.SpaceBetween
                          ) {
                              Column(modifier = Modifier.weight(1f)) {
+                                 val titleText = if (uiState.showUpdateProposal) {
+                                     "Update List?"
+                                 } else {
+                                     "Detected: ${content.title ?: "Unknown"}"
+                                 }
+                                 
                                  Text(
-                                     text = "Detected: ${content.title ?: "Unknown"}",
+                                     text = titleText,
                                      style = MaterialTheme.typography.labelLarge,
-                                     color = MaterialTheme.colorScheme.onPrimaryContainer
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                  )
                                  Text(
                                      text = "Episode ${content.episodeOrChapter ?: "?"} • ${content.site.name}",
                                      style = MaterialTheme.typography.bodyMedium,
-                                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                                  )
                              }
                              Button(
@@ -141,7 +162,7 @@ fun BrowserScreen(
                                      modifier = Modifier.size(16.dp)
                                  )
                                  Spacer(modifier = Modifier.width(8.dp))
-                                 Text("Sync")
+                                 Text(if (uiState.showUpdateProposal) "Update" else "Sync")
                              }
                          }
                      }
@@ -158,7 +179,10 @@ fun BrowserScreen(
                             super.onPageFinished(view, url)
                             canGoBack = view?.canGoBack() ?: false
                             canGoForward = view?.canGoForward() ?: false
-                            url?.let { viewModel.onUrlChanged(it) }
+                            url?.let { 
+                                viewModel.onUrlChanged(it)
+                                viewModel.onPageFinished(it)
+                            }
                         }
                     }
                     
@@ -183,6 +207,8 @@ fun BrowserScreen(
                         loadWithOverviewMode = true
                         useWideViewPort = true
                     }
+                    
+                    addJavascriptInterface(detectionInterface, "AndroidDetection")
                     
                     loadUrl(initialUrl)
                     webView = this

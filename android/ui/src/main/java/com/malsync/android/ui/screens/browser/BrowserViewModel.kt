@@ -16,7 +16,9 @@ data class BrowserUiState(
     val currentUrl: String = "",
     val detectedContent: DetectedContent? = null,
     val isSiteSupported: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val showUpdateProposal: Boolean = false,
+    val injectionScript: String? = null
 )
 
 @HiltViewModel
@@ -28,8 +30,36 @@ class BrowserViewModel @Inject constructor(
     val uiState: StateFlow<BrowserUiState> = _uiState.asStateFlow()
 
     fun onUrlChanged(url: String) {
-        _uiState.update { it.copy(currentUrl = url) }
+        // Reset proposal when URL changes
+        _uiState.update { it.copy(currentUrl = url, showUpdateProposal = false, injectionScript = null) }
         checkUrl(url)
+    }
+
+    fun onPageFinished(url: String) {
+        viewModelScope.launch {
+            val script = streamingSiteRepository.getInjectionScript(url)
+            if (script != null) {
+                _uiState.update { it.copy(injectionScript = script) }
+            }
+        }
+    }
+    
+    fun onVideoFound(duration: Float) {
+        // Optional: Perform actions when video is first found
+    }
+
+    fun onVideoProgress(current: Float, total: Float) {
+        if (total > 0) {
+            val progress = current / total
+            // Trigger at 80% completion
+            if (progress >= 0.8f && !_uiState.value.showUpdateProposal) {
+                _uiState.update { it.copy(showUpdateProposal = true) }
+            }
+        }
+    }
+    
+    fun onScriptInjected() {
+        _uiState.update { it.copy(injectionScript = null) }
     }
 
     private fun checkUrl(url: String) {
