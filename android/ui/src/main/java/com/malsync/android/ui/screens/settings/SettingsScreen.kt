@@ -11,6 +11,20 @@ import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.malsync.android.domain.model.SyncProviderimport androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,8 +35,11 @@ import com.malsync.android.domain.model.SyncProvider
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val providerStates by viewModel.providerStates.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -46,35 +63,29 @@ fun SettingsScreen(
                 SectionHeader(text = "Accounts")
             }
             
-            item {
-                ProviderAccountItem(
-                    provider = SyncProvider.MYANIMELIST,
-                    isConnected = false,
-                    onClick = { /* TODO: Implement OAuth */ }
-                )
-            }
+            // Loop through known providers to render items
+            val providers = listOf(
+                SyncProvider.MYANIMELIST,
+                SyncProvider.ANILIST,
+                SyncProvider.KITSU,
+                SyncProvider.SIMKL,
+                SyncProvider.SHIKIMORI
+            )
             
-            item {
+            items(providers.size) { index ->
+                val provider = providers[index]
+                val isConnected = providerStates[provider] == true
+                
                 ProviderAccountItem(
-                    provider = SyncProvider.ANILIST,
-                    isConnected = false,
-                    onClick = { /* TODO: Implement OAuth */ }
-                )
-            }
-            
-            item {
-                ProviderAccountItem(
-                    provider = SyncProvider.KITSU,
-                    isConnected = false,
-                    onClick = { /* TODO: Implement OAuth */ }
-                )
-            }
-            
-            item {
-                ProviderAccountItem(
-                    provider = SyncProvider.SIMKL,
-                    isConnected = false,
-                    onClick = { /* TODO: Implement OAuth */ }
+                    provider = provider,
+                    isConnected = isConnected,
+                    onClick = { 
+                        if (isConnected) {
+                            viewModel.onDisconnectClick(provider)
+                        } else {
+                            viewModel.onConnectClick(provider) 
+                        }
+                    }
                 )
             }
             

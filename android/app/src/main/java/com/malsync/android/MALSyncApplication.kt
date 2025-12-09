@@ -10,10 +10,12 @@ import javax.inject.Inject
 class MALSyncApplication : Application(), Configuration.Provider {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var syncScheduler: com.malsync.android.data.worker.SyncScheduler
 
     override fun onCreate() {
         super.onCreate()
         // WorkManager initialization is handled automatically via Configuration.Provider
+        syncScheduler.scheduleSync()
     }
 
     override val workManagerConfiguration: Configuration

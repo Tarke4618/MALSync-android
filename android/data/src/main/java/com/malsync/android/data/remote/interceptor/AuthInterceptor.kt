@@ -1,21 +1,13 @@
-package com.malsync.android.data.remote.interceptor
-
-import android.content.Context
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import com.malsync.android.data.local.AuthManager
 import com.malsync.android.domain.model.SyncProvider
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-
-private val Context.dataStore by preferencesDataStore(name = "auth_tokens")
+import javax.inject.Inject
 
 /**
  * Interceptor to add authentication headers to requests
  */
-class AuthInterceptor(private val context: Context) : Interceptor {
+class AuthInterceptor @Inject constructor(private val authManager: AuthManager) : Interceptor {
     
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -27,11 +19,12 @@ class AuthInterceptor(private val context: Context) : Interceptor {
             url.host.contains("anilist.co") -> SyncProvider.ANILIST
             url.host.contains("kitsu.io") -> SyncProvider.KITSU
             url.host.contains("simkl.com") -> SyncProvider.SIMKL
+            url.host.contains("shikimori.one") -> SyncProvider.SHIKIMORI
             else -> null
         }
         
         // Get the access token for this provider
-        val accessToken = provider?.let { getAccessToken(it) }
+        val accessToken = provider?.let { authManager.getToken(it)?.accessToken }
         
         // Add authorization header if token exists
         val newRequest = if (!accessToken.isNullOrBlank()) {
@@ -43,12 +36,5 @@ class AuthInterceptor(private val context: Context) : Interceptor {
         }
         
         return chain.proceed(newRequest)
-    }
-    
-    private fun getAccessToken(provider: SyncProvider): String? = runBlocking {
-        val key = stringPreferencesKey("${provider.name}_access_token")
-        context.dataStore.data.map { preferences ->
-            preferences[key]
-        }.first()
     }
 }

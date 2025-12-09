@@ -1,43 +1,48 @@
 package com.malsync.android.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-// Premium Brand Colors
-val MalBlue = Color(0xFF2E51A2)
-val MalBlueLight = Color(0xFF5B7ECC)
-val MalBlueDark = Color(0xFF152A55)
+// AnymeX / Premium Palette
 
-// Modern Dark Theme Palette
-val MalBackground = Color(0xFF0B0D11) // Richer, darker blue-black
-val MalSurface = Color(0xFF16191F)    // Slightly warmer surface
-val MalSurfaceVariant = Color(0xFF232832) // Lighter surface for cards
+// Backgrounds
+val DeepDarkBackground = Color(0xFF050505) // Almost black
+val DeepDarkSurface = Color(0xFF0F1115)    // Very dark grey
+val ElevaredSurface = Color(0xFF1A1D24)    // Elevated cards
 
-// Accents
-val AccentPrimary = Color(0xFF3D63C2) // Slightly brighter Blue for primary actions
-val AccentSecondary = Color(0xFF5865F2) // "Blurple" (Modern Discord-like)
-val AccentTertiary = Color(0xFFFF5252)  // Soft Red for destructive/important actions
+// Glassmorphism
+val GlassSurface = Color(0x331F2229)       // Semi-transparent
+val GlassBorder = Color(0x1FFFFFFF)        // Thin white border for glass
 
-// Text Colors
-val TextPrimary = Color(0xFFF0F2F5)
-val TextSecondary = Color(0xFFA0A6B2)
-val TextTertiary = Color(0xFF6E7681)
+// Brand Accents
+val PrimaryBrand = Color(0xFF6C63FF)       // Vibrant Purple/Blue
+val SecondaryBrand = Color(0xFF00E5FF)     // Cyan Neon
+val TertiaryBrand = Color(0xFFFF2E63)      // Hot Pink
 
-// Dark Theme (Default)
-val DarkBackground = MalBackground
-val DarkSurface = MalSurface
-val DarkSurfaceVariant = MalSurfaceVariant
-val DarkOnSurface = TextPrimary
-val DarkOnSurfaceVariant = TextSecondary
+// Text
+val TextWhite = Color(0xFFFFFFFF)
+val TextGrey = Color(0xFF9E9E9E)
+val TextDark = Color(0xFF121212)
 
-// Status Colors (Refined & Pastel-ish for dark mode)
-val StatusWatching = Color(0xFF4CAF50) // Softer Green
-val StatusCompleted = Color(0xFF3D63C2) // Brand Blue
-val StatusOnHold = Color(0xFFFFB74D)    // Pastel Orange
-val StatusDropped = Color(0xFFEF5350)   // Soft Red
-val StatusPlanToWatch = Color(0xFF90A4AE) // Blue-Grey
+// Status
+val StatusWatching = Color(0xFF00C853)
+val StatusCompleted = Color(0xFF2962FF)
+val StatusOnHold = Color(0xFFFFAB00)
+val StatusDropped = Color(0xFFD50000)
+val StatusPlanToWatch = Color(0xFFB0BEC5)
 
-// Provider Colors (Official Brand Colors)
-val ColorMAL = Color(0xFF2E51A2)
-val ColorAniList = Color(0xFF02A9FF)
-val ColorKitsu = Color(0xFFFD755C)
-val ColorSimkl = Color(0xFF242424) // Simkl Black
+// Gradients
+val PremiumGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color(0xFF6C63FF),
+        Color(0xFF00E5FF)
+    )
+)
+
+val DarkGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color.Transparent,
+        Color(0xCC050505),
+        Color(0xFF050505)
+    )
+)

@@ -144,3 +144,22 @@ private fun String.toUserMangaStatus(): UserMangaStatus? {
         else -> null
     }
 }
+
+fun MalAnimeListItem.toUserAnimeListEntry(): UserAnimeListEntry? {
+    val status = listStatus?.status?.toUserAnimeStatus() ?: return null
+    return UserAnimeListEntry(
+        animeId = node.id.toString(),
+        title = node.title,
+        imageUrl = node.mainPicture?.large ?: node.mainPicture?.medium,
+        status = status,
+        score = listStatus.score.toFloat(),
+        watchedEpisodes = listStatus.numEpisodesWatched,
+        totalEpisodes = node.numEpisodes,
+        updatedAt = try {
+            // Simple parsing or just use current time if parsing fails for now
+            // In real app, DateFormatter is needed
+            0L 
+        } catch (e: Exception) { 0L },
+        provider = SyncProvider.MYANIMELIST
+    )
+}

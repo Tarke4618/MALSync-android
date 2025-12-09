@@ -1,6 +1,7 @@
 package com.malsync.android.data.di
 
 import android.content.Context
+import com.malsync.android.data.local.AuthManager
 import com.malsync.android.data.remote.api.*
 import com.malsync.android.data.remote.interceptor.AuthInterceptor
 import com.malsync.android.domain.model.SyncProvider
@@ -33,6 +34,10 @@ annotation class KitsuRetrofit
 @Retention(AnnotationRetention.BINARY)
 annotation class SimklRetrofit
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ShikimoriRetrofit
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -47,8 +52,8 @@ object NetworkModule {
     
     @Provides
     @Singleton
-    fun provideAuthInterceptor(@ApplicationContext context: Context): AuthInterceptor {
-        return AuthInterceptor(context)
+    fun provideAuthInterceptor(authManager: AuthManager): AuthInterceptor {
+        return AuthInterceptor(authManager)
     }
     
     @Provides
@@ -109,6 +114,17 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    @Provides
+    @Singleton
+    @ShikimoriRetrofit
+    fun provideShikimoriRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(SyncProvider.SHIKIMORI.apiBaseUrl + "/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
     
     @Provides
     @Singleton
@@ -132,5 +148,11 @@ object NetworkModule {
     @Singleton
     fun provideSimklApiService(@SimklRetrofit retrofit: Retrofit): SimklApiService {
         return retrofit.create(SimklApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideShikimoriApiService(@ShikimoriRetrofit retrofit: Retrofit): ShikimoriApiService {
+        return retrofit.create(ShikimoriApiService::class.java)
     }
 }

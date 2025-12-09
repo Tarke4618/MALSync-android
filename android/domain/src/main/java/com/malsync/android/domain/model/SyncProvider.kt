@@ -7,7 +7,8 @@ enum class SyncProvider {
     MYANIMELIST,
     ANILIST,
     KITSU,
-    SIMKL;
+    SIMKL,
+    SHIKIMORI;
 
     val displayName: String
         get() = when (this) {
@@ -15,6 +16,7 @@ enum class SyncProvider {
             ANILIST -> "AniList"
             KITSU -> "Kitsu"
             SIMKL -> "Simkl"
+            SHIKIMORI -> "Shikimori"
         }
 
     val oauthUrl: String
@@ -23,6 +25,7 @@ enum class SyncProvider {
             ANILIST -> "https://anilist.co/api/v2/oauth/authorize"
             KITSU -> "https://kitsu.io/api/oauth/authorize"
             SIMKL -> "https://simkl.com/oauth/authorize"
+            SHIKIMORI -> "https://shikimori.one/oauth/authorize"
         }
 
     val apiBaseUrl: String
@@ -31,6 +34,7 @@ enum class SyncProvider {
             ANILIST -> "https://graphql.anilist.co"
             KITSU -> "https://kitsu.io/api"
             SIMKL -> "https://api.simkl.com"
+            SHIKIMORI -> "https://shikimori.one/api"
         }
 }
 

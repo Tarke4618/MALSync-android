@@ -1,4 +1,4 @@
-package com.malsync.android.ui.screens.home
+package com.malsync.android.ui.screens.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,58 +11,64 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class HomeUiState(
+data class LibraryUiState(
     val isLoading: Boolean = false,
-    val watchingAnime: List<Anime> = emptyList(),
+    val animeList: List<Anime> = emptyList(),
     val selectedProvider: SyncProvider = SyncProvider.MYANIMELIST,
+    val selectedStatus: UserAnimeStatus = UserAnimeStatus.WATCHING,
     val error: String? = null,
     val isSyncing: Boolean = false
 )
 
-sealed class HomeUiEvent {
-    data class SelectProvider(val provider: SyncProvider) : HomeUiEvent()
-    object Refresh : HomeUiEvent()
-    object Sync : HomeUiEvent()
-    data class UpdateEpisode(val animeId: String, val episode: Int) : HomeUiEvent()
+sealed class LibraryUiEvent {
+    data class SelectProvider(val provider: SyncProvider) : LibraryUiEvent()
+    data class SelectStatus(val status: UserAnimeStatus) : LibraryUiEvent()
+    object Refresh : LibraryUiEvent()
+    object Sync : LibraryUiEvent()
+    data class UpdateEpisode(val animeId: String, val episode: Int) : LibraryUiEvent()
 }
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class LibraryViewModel @Inject constructor(
     private val animeRepository: AnimeRepository
 ) : ViewModel() {
     
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(LibraryUiState())
+    val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
     
     init {
-        loadWatchingAnime()
+        loadAnimeList()
     }
     
-    fun onEvent(event: HomeUiEvent) {
+    fun onEvent(event: LibraryUiEvent) {
         when (event) {
-            is HomeUiEvent.SelectProvider -> {
+            is LibraryUiEvent.SelectProvider -> {
                 _uiState.update { it.copy(selectedProvider = event.provider) }
-                loadWatchingAnime()
+                loadAnimeList()
             }
-            is HomeUiEvent.Refresh -> {
-                loadWatchingAnime()
+            is LibraryUiEvent.SelectStatus -> {
+                _uiState.update { it.copy(selectedStatus = event.status) }
+                loadAnimeList()
             }
-            is HomeUiEvent.Sync -> {
+            is LibraryUiEvent.Refresh -> {
+                loadAnimeList()
+            }
+            is LibraryUiEvent.Sync -> {
                 syncAnimeList()
             }
-            is HomeUiEvent.UpdateEpisode -> {
+            is LibraryUiEvent.UpdateEpisode -> {
                 updateAnimeProgress(event.animeId, event.episode)
             }
         }
     }
     
-    private fun loadWatchingAnime() {
+    private fun loadAnimeList() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             
             animeRepository.getAnimeList(
                 provider = _uiState.value.selectedProvider,
-                status = UserAnimeStatus.WATCHING
+                status = _uiState.value.selectedStatus
             ).catch { e ->
                 _uiState.update { 
                     it.copy(
@@ -74,7 +80,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
-                        watchingAnime = animeList.sortedByDescending { anime -> anime.lastUpdated },
+                        animeList = animeList.sortedByDescending { anime -> anime.lastUpdated },
                         error = null
                     )
                 }
@@ -91,7 +97,7 @@ class HomeViewModel @Inject constructor(
             result.fold(
                 onSuccess = {
                     _uiState.update { it.copy(isSyncing = false) }
-                    loadWatchingAnime()
+                    loadAnimeList()
                 },
                 onFailure = { e ->
                     _uiState.update { 
@@ -111,7 +117,7 @@ class HomeViewModel @Inject constructor(
                 provider = _uiState.value.selectedProvider,
                 animeId = animeId,
                 episode = episode,
-                status = UserAnimeStatus.WATCHING
+                status = _uiState.value.selectedStatus
             )
             
             result.fold(

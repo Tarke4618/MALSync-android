@@ -50,3 +50,19 @@ src/chibiScript/ChibiGeneratorTypes.ts
 
 # IDE
 .idea
+
+# Android/Gradle
+.gradle/
+build/
+local.properties
+.DS_Store
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties

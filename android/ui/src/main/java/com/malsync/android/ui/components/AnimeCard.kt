@@ -19,6 +19,7 @@ import coil.compose.AsyncImage
 import com.malsync.android.domain.model.Anime
 
 @Composable
+@Composable
 fun AnimeCard(
     anime: Anime,
     onClick: () -> Unit,
@@ -26,19 +27,26 @@ fun AnimeCard(
     onIncrementEpisode: (() -> Unit)? = null,
     showProgress: Boolean = true
 ) {
+    val interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f, 
+        label = "cardScale"
+    )
+
     Card(
         modifier = modifier
-            .width(160.dp) // Standard poster width
+            .width(160.dp)
             .height(260.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp), // More rounded
+            .scale(scale)
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Background Image
             AsyncImage(
                 model = anime.coverImage,
                 contentDescription = anime.title,
@@ -46,7 +54,7 @@ fun AnimeCard(
                 contentScale = ContentScale.Crop
             )
 
-            // Gradient Overlay for Text Readability
+            // Gradient Overlay
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -55,45 +63,50 @@ fun AnimeCard(
                             colors = listOf(
                                 Color.Transparent,
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.6f),
+                                Color.Black.copy(alpha = 0.5f),
                                 Color.Black.copy(alpha = 0.9f)
-                            ),
-                            startY = 0f
+                            )
                         )
                     )
             )
 
-            // Status Badge (Glassmorphism)
+            // Status Badge (Glass)
             anime.userStatus?.let { status ->
-                 Surface(
-                    color = getStatusColor(status.name).copy(alpha = 0.85f),
-                    shape = RoundedCornerShape(bottomEnd = 16.dp),
-                    modifier = Modifier.align(Alignment.TopStart)
+                 Box(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp)
+                        .com.malsync.android.ui.theme.glassBackground(
+                            shape = RoundedCornerShape(8.dp),
+                            color = getStatusColor(status.name).copy(alpha = 0.7f),
+                            borderColor = Color.White.copy(alpha = 0.2f)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = status.name.replace("_", " "),
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        color = Color.White
                     )
                 }
             }
 
-            // Episode Badge (Glassmorphism)
+            // Episode Badge (Glass)
             if (anime.episodes != null || anime.currentEpisode > 0) {
-                 Surface(
-                    color = Color.Black.copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
+                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
+                        .com.malsync.android.ui.theme.glassBackground(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color.Black.copy(alpha = 0.5f)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "${anime.currentEpisode}" + (anime.episodes?.let { "/$it" } ?: "+"),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        color = Color.White
                     )
                 }
             }
@@ -107,12 +120,7 @@ fun AnimeCard(
             ) {
                 Text(
                     text = anime.title,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        shadow = androidx.compose.ui.graphics.Shadow(
-                            color = Color.Black,
-                            blurRadius = 4f
-                        )
-                    ),
+                    style = MaterialTheme.typography.titleSmall,
                     color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -141,24 +149,28 @@ fun AnimeCard(
 
                  if (onIncrementEpisode != null) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = onIncrementEpisode,
+                    // Glass Button
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(36.dp),
-                        contentPadding = PaddingValues(0.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                        )
+                            .height(36.dp)
+                            .clickable { onIncrementEpisode() }
+                            .com.malsync.android.ui.theme.glassBackground(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Ep",
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("1 Ep", style = MaterialTheme.typography.labelMedium)
+                         Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Ep",
+                                modifier = Modifier.size(16.dp),
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("1 Ep", style = MaterialTheme.typography.labelMedium, color = Color.White)
+                        }
                     }
                 }
             }

@@ -15,6 +15,12 @@ interface AniListApiService {
     suspend fun query(
         @Body body: Map<String, Any>
     ): Response<Map<String, Any>>
+
+    @POST(".")
+    @Headers("Content-Type: application/json")
+    suspend fun getAnimeList(
+        @Body body: Map<String, Any>
+    ): Response<AniListMediaListCollectionResponse>
     
     @POST(".")
     @Headers("Content-Type: application/json")
