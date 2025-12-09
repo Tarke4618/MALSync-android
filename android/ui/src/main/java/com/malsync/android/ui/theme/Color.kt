@@ -40,6 +40,10 @@ val PremiumGradient = Brush.verticalGradient(
 )
 
 val DarkGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color.Transparent,
+        Color(0xCC050505),
+        Color(0xFF050505)
     )
 )
 
