@@ -48,7 +48,7 @@ fun AnimeEntity.toDomain(): Anime {
         coverImage = coverImage,
         bannerImage = bannerImage,
         episodes = episodes,
-        currentEpisode = currentEpisode,
+        currentEpisode = currentEpisode ?: 0,
         score = score,
         userScore = userScore,
         userStatus = userStatus,

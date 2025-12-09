@@ -20,9 +20,9 @@ class AnimeRepositoryImpl @Inject constructor(
     
     override fun getAnimeList(provider: SyncProvider, status: UserAnimeStatus?): Flow<List<Anime>> {
         return if (status != null) {
-            animeDao.getAnimeByProviderAndStatus(provider.name, status.name)
+            animeDao.getAnimeByProviderAndStatus(provider, status)
         } else {
-            animeDao.getAnimeByProvider(provider.name)
+            animeDao.getAnimeByProvider(provider)
         }.map { entities -> entities.map { it.toDomain() } }
     }
     
@@ -139,7 +139,7 @@ class AnimeRepositoryImpl @Inject constructor(
                         val animeList = response.body()!!.data.map { it.toDomain() }
                         
                         // Clear old data and insert new
-                        animeDao.deleteAllByProvider(provider.name)
+                        animeDao.deleteAllByProvider(provider)
                         animeDao.insertAllAnime(animeList.map { it.toEntity() })
                         
                         Result.success(Unit)

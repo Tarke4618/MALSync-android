@@ -31,6 +31,6 @@ data class AnimeEntity(
     val studios: List<String>,
     val provider: SyncProvider,
     val providerIds: Map<SyncProvider, String>,
-    val nextEpisodeAiring: Int?,
+    val nextEpisodeAiring: Long?,
     val lastUpdated: Long
 )

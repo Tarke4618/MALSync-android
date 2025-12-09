@@ -1,5 +1,6 @@
 package com.malsync.android.data.remote.api
 
+import com.malsync.android.data.remote.dto.anilist.AniListMediaListCollectionResponse
 import com.malsync.android.data.remote.dto.anilist.AniListUserProfileResponse
 import retrofit2.Response
 import retrofit2.http.*

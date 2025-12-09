@@ -111,7 +111,9 @@ data class KitsuRelationships(
 
 data class KitsuRelationship(
     @SerializedName("links")
-    val links: Map<String, String>?
+    val links: Map<String, String>?,
+    @SerializedName("data")
+    val data: KitsuResourceIdentifier?
 )
 
 data class KitsuMeta(

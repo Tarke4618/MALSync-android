@@ -152,8 +152,8 @@ fun MalAnimeListItem.toUserAnimeListEntry(): UserAnimeListEntry? {
         title = node.title,
         imageUrl = node.mainPicture?.large ?: node.mainPicture?.medium,
         status = status,
-        score = listStatus.score.toFloat(),
-        watchedEpisodes = listStatus.numEpisodesWatched,
+        score = listStatus?.score?.toFloat() ?: 0f,
+        watchedEpisodes = listStatus?.numEpisodesWatched ?: 0,
         totalEpisodes = node.numEpisodes,
         updatedAt = try {
             // Simple parsing or just use current time if parsing fails for now

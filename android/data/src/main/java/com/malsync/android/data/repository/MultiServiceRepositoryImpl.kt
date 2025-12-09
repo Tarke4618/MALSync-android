@@ -5,6 +5,7 @@ import com.malsync.android.data.remote.api.*
 import com.malsync.android.domain.model.*
 import com.malsync.android.domain.repository.MultiServiceRepository
 import com.malsync.android.data.mapper.toUserAnimeListEntry
+import com.malsync.android.data.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

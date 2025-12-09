@@ -65,6 +65,7 @@ class AuthRepositoryImpl @Inject constructor(
                 SyncProvider.ANILIST -> fetchAniListUserProfile()
                 SyncProvider.KITSU -> fetchKitsuUserProfile()
                 SyncProvider.SIMKL -> fetchSimklUserProfile()
+                SyncProvider.SHIKIMORI -> throw Exception("Shikimori profile fetch not implemented")
             }
 
             // Cache the profile
