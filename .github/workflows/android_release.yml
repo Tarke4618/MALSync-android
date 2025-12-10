@@ -43,9 +43,9 @@ jobs:
     - name: Create keystore.properties
       run: |
         echo "storeFile=${{ steps.decode_keystore.outputs.filePath }}" > keystore.properties
-        echo "storePassword=${{ secrets.RELEASE_STORE_PASSWORD }}" >> keystore.properties
-        echo "keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}" >> keystore.properties
-        echo "keyPassword=${{ secrets.RELEASE_KEY_PASSWORD }}" >> keystore.properties
+        echo "storePassword=android" >> keystore.properties
+        echo "keyAlias=android_release" >> keystore.properties
+        echo "keyPassword=android" >> keystore.properties
       working-directory: android
 
     - name: Build Release APK
