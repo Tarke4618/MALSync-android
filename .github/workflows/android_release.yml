@@ -31,6 +31,12 @@ jobs:
         fileName: 'release.keystore'
         encodedString: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
         
+    - name: Verify Keystore
+      run: |
+        echo "Decoded keystore path: ${{ steps.decode_keystore.outputs.filePath }}"
+        ls -l ${{ steps.decode_keystore.outputs.filePath }}
+        md5sum ${{ steps.decode_keystore.outputs.filePath }}
+        
     - name: Create keystore.properties
       run: |
         echo "storeFile=${{ steps.decode_keystore.outputs.filePath }}" > keystore.properties
