@@ -13,6 +13,8 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
@@ -41,6 +43,12 @@ annotation class ShikimoriRetrofit
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
+        return GsonBuilder().create()
+    }
     
     @Provides
     @Singleton
