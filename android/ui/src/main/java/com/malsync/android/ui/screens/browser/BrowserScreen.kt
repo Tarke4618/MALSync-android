@@ -6,8 +6,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -87,14 +87,14 @@ fun BrowserScreen(
                             onClick = { webView?.goBack() },
                             enabled = canGoBack
                         ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                         
                         IconButton(
                             onClick = { webView?.goForward() },
                             enabled = canGoForward
                         ) {
-                            Icon(Icons.Filled.ArrowForward, contentDescription = "Forward")
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Forward")
                         }
                         
                         IconButton(onClick = { webView?.reload() }) {
@@ -105,7 +105,7 @@ fun BrowserScreen(
                 
                 if (loadingProgress > 0 && loadingProgress < 100) {
                     LinearProgressIndicator(
-                        progress = loadingProgress / 100f,
+                        progress = { loadingProgress / 100f },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

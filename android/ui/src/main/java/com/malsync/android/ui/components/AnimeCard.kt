@@ -144,7 +144,7 @@ fun AnimeCard(
                     }
                     if (progress > 0) {
                          LinearProgressIndicator(
-                            progress = progress,
+                            progress = { progress },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(4.dp)

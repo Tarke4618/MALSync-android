@@ -39,7 +39,7 @@ class SyncEngine @Inject constructor(
         
         // 3. Push dirty local entries
         val dirtyEntries = userListEntryDao.getDirtyEntries()
-        dirtyEntries.forEach { entry ->
+        dirtyEntries.forEach { _ ->
             // TODO: Resolve which provider to push to, or push to all mapped
             // For now, simpler logic handled in syncProvider or separate push phase
         }

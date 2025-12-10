@@ -82,8 +82,9 @@ class AuthRepositoryImpl @Inject constructor(
             val currentToken = authTokenDao.getAuthToken(provider.name)
                 ?: return Result.failure(Exception("No token to refresh"))
 
-            val refreshToken = currentToken.refreshToken
-                ?: return Result.failure(Exception("No refresh token available"))
+            if (currentToken.refreshToken == null) {
+                return Result.failure(Exception("No refresh token available"))
+            }
 
             // Refresh logic would go here - in a real implementation, 
             // you'd call the OAuth token refresh endpoint for each provider

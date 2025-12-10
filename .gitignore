@@ -66,3 +66,8 @@ android/build/
 android/.gradle/
 android/app/build/
 android/local.properties
+
+# Keystore
+*.keystore
+keystore.properties
+android/keystore.properties

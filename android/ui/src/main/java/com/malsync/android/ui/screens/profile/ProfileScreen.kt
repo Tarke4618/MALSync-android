@@ -7,15 +7,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.malsync.android.domain.model.UserAnimeStatus
 import com.malsync.android.ui.components.*
 
@@ -27,6 +28,21 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
+    val pullToRefreshState = rememberPullToRefreshState()
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            viewModel.onEvent(ProfileUiEvent.Refresh)
+        }
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        if (uiState.isLoading) {
+            pullToRefreshState.startRefresh()
+        } else {
+            pullToRefreshState.endRefresh()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -39,12 +55,11 @@ fun ProfileScreen(
             )
         }
     ) { paddingValues ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(uiState.isLoading),
-            onRefresh = { viewModel.onEvent(ProfileUiEvent.Refresh) },
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -108,7 +123,7 @@ fun ProfileScreen(
                     uiState.animeList.isEmpty() -> {
                         item {
                             EmptyState(
-                                message = "No anime found with status \"${uiState.selectedStatus.name.replace("_", " ").lowercase().capitalize()}\"",
+                                message = "No anime found with status \"${uiState.selectedStatus.name.replace("_", " ").lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() }}\"",
                                 icon = "📋"
                             )
                         }
@@ -129,6 +144,11 @@ fun ProfileScreen(
                     }
                 }
             }
+            
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
@@ -250,7 +270,7 @@ private fun StatusFilterRow(
                         Text(
                             text = status.name.replace("_", " ").lowercase()
                                 .split(" ")
-                                .joinToString(" ") { it.capitalize() }
+                                .joinToString(" ") { it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(java.util.Locale.getDefault()) else char.toString() } }
                         )
                     }
                 )

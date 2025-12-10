@@ -22,8 +22,10 @@ class DetectAnimeFromUrlUseCase @Inject constructor(
             }
             
             // Detect content from URL
-            val detectedContent = streamingSiteRepository.detectContent(url)
-                ?: return Result.success(null)
+            // Detect content from URL
+            if (streamingSiteRepository.detectContent(url) == null) {
+                return Result.success(null)
+            }
             
             // Try to find matching anime in user's list or database
             val anime = animeRepository.getAnimeByUrl(url).getOrNull()
