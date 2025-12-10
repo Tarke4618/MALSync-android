@@ -28,27 +28,6 @@ jobs:
       with:
         gradle-version: '8.6'
         
-    - name: Decode Keystore
-      id: decode_keystore
-      uses: timheuer/base64-to-file@v1.2
-      with:
-        fileName: 'release.keystore'
-        encodedString: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
-        
-    - name: Verify Keystore
-      run: |
-        echo "Decoded keystore path: ${{ steps.decode_keystore.outputs.filePath }}"
-        ls -l ${{ steps.decode_keystore.outputs.filePath }}
-        md5sum ${{ steps.decode_keystore.outputs.filePath }}
-        
-    - name: Create keystore.properties
-      run: |
-        echo "storeFile=${{ steps.decode_keystore.outputs.filePath }}" > keystore.properties
-        echo "storePassword=${{ secrets.RELEASE_STORE_PASSWORD }}" >> keystore.properties
-        echo "keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}" >> keystore.properties
-        echo "keyPassword=${{ secrets.RELEASE_KEY_PASSWORD }}" >> keystore.properties
-      working-directory: android
-
     - name: Build Release APK
       run: gradle assembleRelease
       working-directory: android
