@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -49,6 +52,9 @@ jobs:
       run: gradle assembleRelease
       working-directory: android
       
+    - name: List Build Outputs
+      run: ls -R android/app/build/outputs/
+      
     - name: Sign Release APK
       # This step is technically redundant if assembleRelease signs it via signingConfig,
       # but ensuring the artifact path is correct is good.
@@ -60,6 +66,6 @@ jobs:
       with:
         generate_release_notes: true
         files: |
-          android/app/build/outputs/apk/release/app-release.apk
+          android/app/build/outputs/apk/release/*.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
